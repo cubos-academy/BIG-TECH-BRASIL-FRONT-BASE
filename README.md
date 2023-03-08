@@ -13,6 +13,8 @@ Nesse projeto nós usamos e já configuramos:
 - Typescript
 - SASS (scss)
 
+Figma do projeto: https://www.figma.com/file/Fe9lP5qP7z5HccXo12WAtR/Big-Tech-Brasil---Frontend?node-id=25%3A321&t=a9V2RIuWbQhH7mJs-1
+
 Para executar o projeto você precisa:
 
 1. Realizar o clone do projeto para o seu computador
