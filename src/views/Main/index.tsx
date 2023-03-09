@@ -1,16 +1,15 @@
 import styles from "./styles.module.scss";
 import PublicParticipantCard from "../../components/ParticipantCard/Public";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GameType } from "../../types/GameType";
-import { gameData, participants } from "../../fakeData";
+import { participants } from "../../fakeData";
 import { ParticipantType } from "../../types/ParticipantType";
 import CheckIcon from "../../assets/check-icon.svg";
+import api from "../../services/api";
 
 function Main() {
-  const [game, setGame] = useState<GameType>({ ...gameData });
-  const [allParticipants, setAllParticipants] = useState<ParticipantType[]>([
-    ...participants,
-  ]);
+  const [game, setGame] = useState<GameType>();
+  const [allParticipants, setAllParticipants] = useState<ParticipantType[]>([]);
 
   const [selectedParticipant, setSelectedParticipant] =
     useState<ParticipantType | null>();
@@ -41,8 +40,21 @@ function Main() {
     });
   }
 
-  function handleVote() {
-    setVotedParticipant(selectedParticipant);
+  async function handleVote() {
+    try {
+      if (!selectedParticipant) {
+        return;
+      }
+
+      await api.post("/votes", {
+        participantId: selectedParticipant.id,
+        gameId: game?.id,
+      });
+
+      setVotedParticipant(selectedParticipant);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function handleClearVote() {
@@ -50,36 +62,57 @@ function Main() {
     setVotedParticipant(null);
   }
 
+  useEffect(() => {
+    async function loadGame() {
+      try {
+        const response = await api.get("/games");
+        const data: GameType = response.data[0];
+
+        const gameParticipants = data.gameParticipants.map(
+          (gameParticipant) => gameParticipant.participant
+        );
+
+        setGame(data);
+        setAllParticipants(gameParticipants);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    loadGame();
+  }, []);
+
   return (
     <main className={styles.main}>
       <div className={styles.container}>
         <span>BIG TECH BRASIL</span>
         <h1>
-          {game.isActive
+          {game && game.isActive
             ? "Quem você gostaria de eliminar?"
             : "Votação encerrada!"}
         </h1>
 
         <div className={styles.container__participants}>
-          {game.gameParticipants.map((gameParticipant) => (
-            <div key={gameParticipant.participant.id}>
-              {votedParticipant?.id === gameParticipant.participant.id && (
-                <span>
-                  <img src={CheckIcon} alt="check" />
-                  Você votou em
-                </span>
-              )}
-              <PublicParticipantCard
-                gameParticipant={gameParticipant}
-                handleSelect={handleSelect}
-                selected={selectedParticipant}
-                voted={votedParticipant}
-              />
-            </div>
-          ))}
+          {game &&
+            game.gameParticipants.map((gameParticipant) => (
+              <div key={gameParticipant.participant.id}>
+                {votedParticipant?.id === gameParticipant.participant.id && (
+                  <span>
+                    <img src={CheckIcon} alt="check" />
+                    Você votou em
+                  </span>
+                )}
+                <PublicParticipantCard
+                  gameParticipant={gameParticipant}
+                  handleSelect={handleSelect}
+                  selected={selectedParticipant}
+                  voted={votedParticipant}
+                />
+              </div>
+            ))}
         </div>
 
-        {game.isActive && (
+        {game && game.isActive && (
           <button
             className={`${
               selectedParticipant
