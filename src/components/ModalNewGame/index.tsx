@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { participants } from "../../fakeData";
+import api from "../../services/api";
 import { ParticipantType } from "../../types/ParticipantType";
 import styles from "./styles.module.scss";
 
@@ -23,35 +24,53 @@ function ModalNewGame({ open, handleClose }: IProps) {
     setAllParticipants(localParticipants);
   }
 
-  function handleCreateNewGame() {
-    const selectedParticipantsId = [];
+  async function handleCreateNewGame() {
+    try {
+      const selectedParticipantsId = [];
 
-    for (const participant of allParticipants) {
-      if (participant.checked) {
-        selectedParticipantsId.push(participant.id);
+      for (const participant of allParticipants) {
+        if (participant.checked) {
+          selectedParticipantsId.push(participant.id);
+        }
       }
-    }
 
-    if (!selectedParticipantsId.length) {
-      console.log("Selecione um participante");
-      return;
-    }
+      if (!selectedParticipantsId.length) {
+        console.log("Selecione um participante");
+        return;
+      }
+      const response = await api.post("/games", {
+        participants: selectedParticipantsId,
+      });
 
-    console.log("Game criado...");
-    console.log(selectedParticipantsId);
+      if (response.status === 201) {
+        handleClose();
+      }
+
+      console.log("Game criado...");
+      console.log(selectedParticipantsId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function loadParticipants() {
+    try {
+      const response = await api.get("/participants?active=true");
+      const data = response.data as ParticipantType[];
+
+      data.forEach((participant) => (participant.checked = false));
+
+      setAllParticipants(data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
-    const localParticipants: ParticipantType[] = participants;
-
-    localParticipants.forEach((participant) => (participant.checked = false));
-
-    const filteredParticipants = localParticipants.filter(
-      (participants) => !participants.eliminated
-    );
-
-    setAllParticipants(filteredParticipants);
-  }, []);
+    if (open) {
+      loadParticipants();
+    }
+  }, [open]);
 
   return (
     <>

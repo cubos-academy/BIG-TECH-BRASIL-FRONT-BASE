@@ -62,23 +62,23 @@ function Main() {
     setVotedParticipant(null);
   }
 
-  useEffect(() => {
-    async function loadGame() {
-      try {
-        const response = await api.get("/games");
-        const data: GameType = response.data[0];
+  async function loadGame() {
+    try {
+      const response = await api.get("/games");
+      const data: GameType = response.data[0];
 
-        const gameParticipants = data.gameParticipants.map(
-          (gameParticipant) => gameParticipant.participant
-        );
+      const gameParticipants = data.gameParticipants.map(
+        (gameParticipant) => gameParticipant.participant
+      );
 
-        setGame(data);
-        setAllParticipants(gameParticipants);
-      } catch (error) {
-        console.log(error);
-      }
+      setGame(data);
+      setAllParticipants(gameParticipants);
+    } catch (error) {
+      console.log(error);
     }
+  }
 
+  useEffect(() => {
     loadGame();
   }, []);
 

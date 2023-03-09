@@ -6,19 +6,43 @@ import { useEffect, useState } from "react";
 import { GameType } from "../../types/GameType";
 import { gameData } from "../../fakeData";
 import ModalNewGame from "../../components/ModalNewGame";
+import api from "../../services/api";
 
 function Dashboard() {
   const [game, setGame] = useState<GameType>();
   const [open, setOpen] = useState(false);
 
+  function handleCopyUrl() {
+    navigator.clipboard.writeText("http://localhost:3000");
+  }
+
   function handleClose() {
     setOpen(false);
+    loadGame();
+  }
+
+  async function handleFinishGame() {
+    try {
+      await api.patch(`/games/${game?.id}`);
+      loadGame();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function loadGame() {
+    try {
+      const response = await api.get("/games");
+      const data: GameType = response.data[0];
+
+      setGame(data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
-    if (gameData.isActive) {
-      setGame(gameData);
-    }
+    loadGame();
   }, []);
 
   return (
@@ -45,8 +69,23 @@ function Dashboard() {
               ))}
             </div>
             <div>
-              <button className="btn-outline--gray">Encerrar votação</button>
-              <button className="btn-outline--disabled">
+              {game.isActive ? (
+                <button
+                  className="btn-outline--gray"
+                  onClick={handleFinishGame}
+                >
+                  Encerrar votação
+                </button>
+              ) : (
+                <button
+                  className="btn-rounded--pink"
+                  onClick={() => setOpen(true)}
+                >
+                  Criar nova votação
+                </button>
+              )}
+
+              <button className="btn-outline--disabled" onClick={handleCopyUrl}>
                 http://localhost:3000
               </button>
             </div>
