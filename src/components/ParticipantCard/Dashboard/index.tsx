@@ -1,35 +1,23 @@
-import styles from "../styles.module.scss";
 import { GameParticipantType } from "../../../types/GameParticipantType";
-import { ParticipantType } from "../../../types/ParticipantType";
+import styles from "../styles.module.scss";
 
 interface IProps {
   gameParticipant: GameParticipantType;
-  handleSelect: (id: string) => void;
-  selected?: ParticipantType | null;
-  voted?: ParticipantType | null;
+  selected?: boolean;
 }
 
-function PublicParticipantCard({
-  gameParticipant,
-  handleSelect,
-  selected,
-  voted,
-}: IProps) {
+function DashboardParticipantCard({ gameParticipant, selected }: IProps) {
   const { participant } = gameParticipant;
   return (
     <div
       className={
-        selected?.id === participant.id || participant.eliminated
+        selected
           ? `${styles.container} ${styles["container--selected"]}`
           : styles.container
       }
       style={{
-        filter: `${
-          voted && voted.id !== participant.id ? "grayscale(1.0)" : ""
-        }`,
-        width: "240px",
+        width: "340px",
       }}
-      onClick={() => handleSelect(participant.id)}
     >
       <div>
         <h1>{participant.name}</h1>
@@ -42,4 +30,4 @@ function PublicParticipantCard({
   );
 }
 
-export default PublicParticipantCard;
+export default DashboardParticipantCard;

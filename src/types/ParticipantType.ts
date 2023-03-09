@@ -4,4 +4,5 @@ export type ParticipantType = {
   username: string;
   avatar: string;
   eliminated: boolean;
+  checked?: boolean;
 };

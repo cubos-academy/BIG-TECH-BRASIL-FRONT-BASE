@@ -6,7 +6,7 @@ const participants = [
     name: "Java",
     username: "java",
     avatar: "https://cdn-icons-png.flaticon.com/512/226/226777.png",
-    eliminated: false,
+    eliminated: true,
   },
   {
     id: "3f00b53e-1958-4f83-9a48-8d89f4240885",
@@ -58,7 +58,7 @@ const participants = [
 
 const gameData = {
   id: "e5348c9e-63a2-480f-87f3-b106b05189be",
-  isActive: true,
+  isActive: false,
   createdAt: "2023-03-08T17:25:33.531Z",
   gameParticipants: <GameParticipantType[]>[
     {
@@ -67,7 +67,7 @@ const gameData = {
         name: "Java",
         username: "java",
         avatar: "https://cdn-icons-png.flaticon.com/512/226/226777.png",
-        eliminated: false,
+        eliminated: true,
       },
       votes: 0,
       percent: 33,

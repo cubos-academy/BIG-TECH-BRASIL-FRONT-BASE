@@ -1,11 +1,59 @@
 .container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 
   width: 100vw;
   min-height: 100vh;
 
-  color: white;
-  background-color: black;
+  position: relative;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100vw - 297.29px);
+
+  &--new-vote {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 390px;
+
+    img {
+      width: 200px;
+      height: 200px;
+    }
+
+    strong {
+      font-family: var(--font-primary);
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 24px;
+      letter-spacing: 0.006em;
+      color: #727579;
+
+      margin: 40px 0;
+    }
+  }
+
+  &--participants-vote {
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      display: flex;
+      gap: 16px;
+
+      &:last-of-type {
+        margin-top: 51px;
+
+        button {
+          display: flex;
+          gap: 8px;
+        }
+      }
+    }
+  }
 }
