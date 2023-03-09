@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { participants } from "../../fakeData";
 import { ParticipantType } from "../../types/ParticipantType";
 import styles from "./styles.module.scss";
-import { participants } from "../../fakeData";
 
 interface IProps {
   open: boolean;
